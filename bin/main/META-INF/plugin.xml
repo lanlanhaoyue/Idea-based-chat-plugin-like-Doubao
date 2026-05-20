@@ -1,0 +1,76 @@
+<idea-plugin>
+    <id>com.aiassistant.codeai</id>
+    <name>AI Code Assistant</name>
+    <vendor>AI Assistant</vendor>
+
+    <idea-version since-build="241" until-build="261.*"/>
+
+    <description><![CDATA[
+        AI-powered code assistant plugin for IntelliJ IDEA.
+        <ul>
+            <li>Select code → right-click to send to AI for explanation, optimization, or comment generation</li>
+            <li>Independent chat window like ChatGPT</li>
+            <li>Supports any OpenAI-compatible API (e.g., NewAPI)</li>
+            <li>Custom Base URL, API Key, and Model selection</li>
+        </ul>
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow
+            id="AI Assistant"
+            anchor="right"
+            icon="AllIcons.Actions.Annotate"
+            factoryClass="com.aiassistant.AIChatToolWindowFactory"/>
+
+        <applicationConfigurable
+            parentId="tools"
+            instance="com.aiassistant.settings.AISettingsConfigurable"
+            id="com.aiassistant.settings"
+            displayName="AI Code Assistant"/>
+
+        <applicationService
+            serviceImplementation="com.aiassistant.AISettingsState"/>
+
+        <applicationService
+            serviceImplementation="com.aiassistant.AIService"/>
+
+        <applicationService
+            serviceImplementation="com.aiassistant.ProjectFileService"/>
+    </extensions>
+
+    <actions>
+        <action
+            id="AIAssistant.ExplainCode"
+            class="com.aiassistant.actions.ExplainCodeAction"
+            text="AI: 解释代码"
+            description="Send selected code to AI for explanation">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+        </action>
+
+        <action
+            id="AIAssistant.OptimizeCode"
+            class="com.aiassistant.actions.OptimizeCodeAction"
+            text="AI: 优化代码"
+            description="Send selected code to AI for optimization suggestions">
+            <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="AIAssistant.ExplainCode"/>
+        </action>
+
+        <action
+            id="AIAssistant.GenerateComment"
+            class="com.aiassistant.actions.GenerateCommentAction"
+            text="AI: 生成注释"
+            description="Send selected code to AI for generating comments">
+            <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="AIAssistant.OptimizeCode"/>
+        </action>
+
+        <action
+            id="AIAssistant.ChatAboutCode"
+            class="com.aiassistant.actions.ChatAboutCodeAction"
+            text="AI: 对话此代码"
+            description="Open chat window with selected code as context">
+            <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="AIAssistant.GenerateComment"/>
+        </action>
+    </actions>
+</idea-plugin>
